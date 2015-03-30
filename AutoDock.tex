@@ -1,0 +1,661 @@
+\documentclass[slidestop,mathserif,compress,xcolor=svgnames]{beamer} 
+\mode<presentation>
+{  
+  \setbeamertemplate{background canvas}[vertical shading][bottom=blue!5,top=blue!5]
+  \setbeamertemplate{navigation symbols}{}%{\insertsectionnavigationsymbol}
+  \usetheme{LSU}
+%  default infolines miniframes shadow sidebar smoothbars smoothtree split tree
+%    \useoutertheme{shadow}
+}
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{amsmath,amssymb,amsfonts,subfigure}
+\usepackage{multirow,rotating}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage[normalem]{ulem}
+\usepackage{graphicx}
+\usefonttheme{serif}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{calc}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\usepackage{hyperref}
+% \usepackage{movie15}
+\hypersetup{
+  pdftitle={Introduction to Autodock and Autodock Tools},
+  pdfauthor={Alexander B. Pacheco, User Services Consultant, Louisiana State University}
+}
+%\usepackage{movie15}
+\usepackage{times}
+
+\setbeamercovered{dynamic}
+\beamersetaveragebackground{DarkBlue!2}
+\beamertemplateballitem
+
+\definecolor{DarkGreen}{rgb}{0.0,0.3,0.0}
+\definecolor{darkgreen}{rgb}{0.0,0.6,0.0}
+\definecolor{Blue}{rgb}{0.0,0.0,0.8} 
+\definecolor{dodgerblue}{rgb}{0.1,0.1,1.0}
+\definecolor{indigo}{rgb}{0.41,0.1,0.0}
+\definecolor{seagreen}{rgb}{0.1,1.0,0.1}
+\DeclareSymbolFont{extraup}{U}{zavm}{m}{n}
+\DeclareMathSymbol{\vardiamond}{\mathalpha}{extraup}{87}
+\newcommand*\up{\textcolor{green}{%
+  \ensuremath{\blacktriangle}}}
+\newcommand*\down{\textcolor{red}{%
+  \ensuremath{\blacktriangledown}}}
+\newcommand*\const{\textcolor{darkgray}%
+  {\textbf{--}}}
+\newcommand{\bftt}[1]{\textbf{\texttt{#1}}}
+
+\setbeamercolor{uppercol}{fg=white,bg=red!30!black}%
+\setbeamercolor{lowercol}{fg=black,bg=red!15!white}%
+\setbeamercolor{uppercol1}{fg=white,bg=blue!30!black}%
+\setbeamercolor{lowercol1}{fg=black,bg=blue!15!white}%%
+\setbeamercolor{uppercol2}{fg=white,bg=green!30!black}%
+\setbeamercolor{lowercol2}{fg=black,bg=green!15!white}%
+\setbeamercolor{uppercol3}{fg=white,bg=green!50!red!50!black}%
+\setbeamercolor{lowercol3}{fg=black,bg=green!60!red!30!white}%
+\setbeamercolor{uppercol4}{fg=white,bg=green!30!blue!50!black}%
+\setbeamercolor{lowercol4}{fg=black,bg=green!30!blue!50!white}%
+\newenvironment{ablock}[0]
+{
+\begin{beamerboxesrounded}[upper=uppercol,lower=lowercol,shadow=true]}
+{\end{beamerboxesrounded}}
+\newenvironment{bblock}[0]
+{
+\begin{beamerboxesrounded}[upper=uppercol1,lower=lowercol1,shadow=true]}
+{\end{beamerboxesrounded}}
+\newenvironment{eblock}[0]
+{
+\begin{beamerboxesrounded}[upper=uppercol2,lower=lowercol2,shadow=true]}
+{\end{beamerboxesrounded}}
+\newenvironment{beblock}[0]
+{
+\begin{beamerboxesrounded}[upper=uppercol3,lower=lowercol3,shadow=true]}
+{\end{beamerboxesrounded}}
+\newenvironment{eeblock}[0]
+{
+\begin{beamerboxesrounded}[upper=uppercol4,lower=lowercol4,shadow=true]}
+{\end{beamerboxesrounded}}
+
+% Fix font size of nested itemize/enumerate
+\setbeamerfont{itemize/enumerate body}{}
+\setbeamerfont{itemize/enumerate subbody}{size=\scriptsize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\scriptsize}
+
+\title[AutoDock]{Introduction to AutoDock and AutoDock Tools}
+
+
+\author[Alex Pacheco]{\large{Alexander~B.~Pacheco}}
+       
+\institute[HPC@LSU - http://www.hpc.lsu.edu] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
+
+\date[{Mar. 28, 2012\hspace{2cm}}]{\scriptsize{HPC Training Series\\Louisiana State University\\Baton Rouge\\Mar. 28, 2012}}
+     
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% Main Logo on bottom left
+\pgfdeclareimage[height=0.55cm]{its-logo}{LONI}
+\logo{\pgfuseimage{its-logo}}
+% University Logo on top left
+\pgfdeclareimage[height=0.55cm]{university-logo}{LSUGeauxPurp}
+\tllogo{\pgfuseimage{university-logo}}
+% Logo at top right
+\pgfdeclareimage[height=0.6cm]{institute-logo}{PUR_BLK_HOR}
+\trlogo{\pgfuseimage{institute-logo}}
+% Logo at bottom right
+\pgfdeclareimage[height=0.55cm]{hpc-logo}{CCT}
+\brlogo{\pgfuseimage{hpc-logo}}
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+  \AtBeginSection[]
+  {
+    \begin{frame}<beamer>
+     \frametitle{\small{Outline}}
+      \small
+      \tableofcontents[currentsection,currentsubsection]
+    \end{frame}
+  }
+
+\begin{document}
+\scriptsize
+
+\frame{\titlepage}
+
+\begin{frame}[label=toc,squeeze]
+  \footnotesize
+  \frametitle{\small{Outline}}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\begin{frame}%[allowframebreaks]
+  \frametitle{\small Introduction}
+  \begin{itemize}
+    \item Interaction between biomolecules lie at the core of all metabolic processes and life activities.
+    \item The number of solved protein structures available in the databases is expanding exponentially.
+    \item To understand their functions it is essential to elucidate the interaction mechanisms between the different molecules.
+    \item e.g. drug design, antigen-antibody interaction
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\small Macromolecular Docking}
+  \begin{itemize}
+    \item Macromolecular docking is the computational modelling of the quaternary  structure of complexes formed by two or more interacting biological macromolecules.
+    \item In any docking scheme, the desire for a robust and accurate procedure and the desire to keep the computational demands at a reasonable level must be balanced.
+    \item The ideal procedure would find the global minimum in the interaction energy between the substrate and the target protien, exploring all available degrees of freedom of the system.
+    \item The simulation time should be reasonable compared to other computation that a structural researcher may undertake, such as crystallographic refinement.
+    \item Simply put, Molecular Docking is a computational procedure for predicting the best way(s) two molecules will interact
+    \item Procedure consists of:
+    \begin{enumerate}
+      \item Obtain structures of the two molecules.
+      \item Locate the best binding site(s).
+      \item Determine the best binding mode(s).
+    \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}%
+  \frametitle{\small What is AutoDock?}
+  \begin{itemize}
+    \item A number of docking techniques have been developed to simplify the docking procedure.
+    \item AutoDock is an automated procedure for predicting the interactions of ligands with biomolecular targets which are key to understanding funcdamental aspects of biology.
+    \item The goal of Autodock is to provide a computational tools to assist researchers in the determination of biomolecular complexes.
+    \item AutoDock combines two methods to achieve these goals:
+    \begin{enumerate}
+      \item rapid grid-based energy evaluation
+      \item efficient search of torsional freedom
+    \end{enumerate}
+  \end{itemize}
+  
+  \begin{bblock}{Download Files from}
+    \url{http://www.hpc.lsu.edu/training/tutorials/\#spring2012-autodock}
+  \end{bblock}
+
+%  \begin{bblock}{Predicting the best ways two molecules will interact}
+%    \begin{itemize}
+%      \item We need to quantify or rank solutions.
+%      \item We need a scoring function or force field.
+%    \end{itemize}
+%  \end{bblock}
+
+%  \begin{bblock}{Predicting the best ways two molecules will interact}
+%    \begin{itemize}
+%      \item The experimentally observed structure may be amongst one of several predicted solutions.
+%      \item We need a search method.
+%    \end{itemize}
+%  \end{bblock}
+\end{frame}
+
+\section{Using Autodock Tools to Create Input Files}
+\begin{frame}
+  \frametitle{\small What is Autodock Tools}
+  \begin{block}{}
+    \begin{itemize}
+      \item Autodock Tools or ADT is a graphical user interface created by the developers of Autodock, which amongst other things helps to set up which bonds will treated as rotatable in the ligand and to analyze dockings.
+      \item With ADT, you can:
+      \begin{enumerate}
+        \item View molecules in 3D, rotate \& scale in real time.
+        \item Add all hydrogens or just non-polar hydrogens.
+        \item Assign partial atomic charges to the ligand and the macromolecule (Gasteiger or Kollman United Atom charges).
+        \item Merge non-polar hydrogens and their charges with their parent carbon atom.
+        \item Set up rotatable bonds in the ligand using a graphical version of AutoTors.
+        \item Set up the AutoGrid Parameter File (GPF) using a visual representation of the grid box, and slider-based widgets.
+        \item Set up the AutoDock Parameter File (DPF) using forms.
+        \item Launch AutoGrid and AutoDock.
+        \item Read in the results of an AutoDock job and graphically display them.
+        \item View isocontoured AutoGrid affinity maps.
+        \item And much, much more...
+      \end{enumerate}
+      \item Can be downloaded from \url{http://mgltools.scripps.edu/downloads}
+      \begin{enumerate}
+        \item[$\vardiamond$] If you haven't already, please download and install ADT now. The Hands-On Exercise that follow makes extensive use of ADT.
+      \end{enumerate}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\small Using Autodock}
+  \begin{block}{}
+    \begin{itemize}
+      \item An AutoDock calculation consists of multiple steps most of which need to done using ADT
+      \begin{enumerate}
+        \item Prepare ligand and receptor (macromolecule) for docking,
+        \item Define grid for docking,
+        \item Run a AutoGrid calculation,
+        \item Define docking parameters,
+        \item Run AutoDock calculation,
+        \item Analyze Results.
+      \end{enumerate}
+      \item Each docking requires at least four input files:
+      \begin{enumerate}
+        \item a PDBQT file for the ligand that encodes a torsion tree,
+        \item a PDBQT file for the receptor,
+        \item a grid parameter file (GPF) for AutoGrid calculation, and
+        \item a docking parameter file (DPG) for AutoDock calculation.
+        \item[$\vardiamond$] If some residues in the receptor are to be modeled as flexible, a fifth file will be necessary
+        \item a PDBQT file containing the flexible receptor residues.
+      \end{enumerate}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\subsection{Editing a PDB File}
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Editing a PDB File}
+  \begin{block}{Why?}
+    Protein Data Bank (PDB) files may have a variety of problems, such as
+    \begin{itemize}
+      \item missing atoms, added waters, more than one molecule, chain breaks, alternate locations, \emph{etc}.
+    \end{itemize}
+    that need to be corrected before they can be used in AutoDock.
+  \end{block}
+
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item Open ADT
+      \item Read in \texttt{hsg1.pdb}
+      \item Add waters
+      \item[] \texttt{Select$\rightarrow$Select From String}
+      \item[] type \texttt{HOH*} in the Residue entry
+      \item[] Click on \texttt{Add} and \texttt{Yes} for warning message
+      \item[] On ADT window, you should see \texttt{Selected: 127 Atoms}
+      \item Click on \texttt{Dismiss} to the close the \texttt{Select From String} widget.
+      \item Delete Oxygen and Add Hydrogens
+      \item[] \texttt{Edit$\rightarrow$Delete$\rightarrow$Delete AtomSet$\rightarrow$Continue}
+      \item[] \texttt{Edit$\rightarrow$Hydrogens$\rightarrow$Add}
+      \item Choose to all \texttt{All Hydrogens} using the method \texttt{noBondOrder} with \texttt{yes} to renumbering and click \texttt{OK}
+      \item[] 1612 hydrogen atoms should be added to hsg1
+      \item Save PDB File as hsg1.pdb
+      \item[]\texttt{File$\rightarrow$Save$\rightarrow$Write PDB}
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\subsection{Preparing the Ligand File for AutoDock}
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Preparing the Ligand File}
+  \begin{block}{}
+    \begin{itemize}
+      \item AutoDock requires that ligands have partial atomic charges and 
+AutoDock atom types for each atom; it also requires a description of the rotatable bonds in the ligand.
+      \item AutoDock uses the idea of a tree in which the rigid core of the molecule is a 'root', and the flexible parts are 'branches' that emanate from the root.  
+      \item Ligands are written in PDBQT-formatted files with special keywords recognized by AutoDock.  
+      \item The keywords ROOT, ENDROOT, BRANCH, and ENDBRANCH establish this torsion tree. 
+      \item The keyword TORSDOF specifies the number of torsional degrees of freedom in the ligand. 
+      \item In the AutoDock 4 force field, the TORSDOF value for a ligand is the total number of rotatable bonds in the ligand. This number excludes 
+bonds in rings, bonds to leaf atoms, amide bonds, guanidinium bonds, 
+etc. 
+      \item TORSDOF is used in calculating the change in free energy caused 
+by the loss of torsional degrees of freedom upon binding.
+    \end{itemize}
+  \end{block}
+
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item Read ind.pdb
+      \item[] \texttt{Ligand$\rightarrow$Input$\rightarrow$Open}
+      \item Detect Torsion Tree Root
+      \item[] \texttt{Ligand$\rightarrow$Torsion Tree$\rightarrow$Detect Root}
+      \item Choose Torsions
+      \item[] \texttt{Ligand$\rightarrow$Torsion Tree$\rightarrow$Choose Torsions}
+      \begin{enumerate}
+        {\tiny
+        \item[$\vardiamond$] This opens the Torsion Count widget which displays current active bonds. 
+        \item[$\vardiamond$] Bonds that cannot be rotated are colored red 
+        \item[$\vardiamond$] Bonds that could be rotated but are currently inactive are colored purple
+        \item[$\vardiamond$] Bonds that are currently active are colored green
+        \item[$\vardiamond$] Bonds in cycles cannot be rotated
+        \item[$\vardiamond$] Only single bonds can be rotated
+        \item[$\vardiamond$] The widget has buttons that let you toggle the activity bonds
+        \item[$\vardiamond$] Amide bonds should not be rotatable.
+        }
+      \end{enumerate}
+      \item Set number of Torsions
+      \item[] \texttt{Ligand$\rightarrow$Torsion Tree$\rightarrow$Set Number of Torsions}
+      \item[] Set \texttt{fewest atoms} to 6
+      \item Save pdbqt file as ind.pdbqt
+      \item[] \texttt{Ligand$\rightarrow$Output$\rightarrow$Save as PDBQT}
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\subsection{Preparing the Macromolecular File}
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Preparing the Macromolecular File}
+  \begin{block}{}
+    \begin{itemize}
+      \item AutoDock3 docks a flexible ligand to a rigid receptor
+      \item AutoDock4 adds support for including a conformational search of flexible sidechains of designated residues to the receptor.
+      \item The flexibility pattern in the moving sidechains of the residues is encoded with AutoDock4 specific keywords \texttt{BEGIN\_RES} and \texttt{END\_RES} as well as \texttt{ROOT, ENDROOT, BRANCH} and \texttt{ENDBRANCH}.
+      \item The flexible residues are written in separate \texttt{PDBQT} file.
+      \item The only rigid residues are written in the file for AutoGrid calculations.
+    \end{itemize}
+  \end{block}
+
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item Choose \texttt{hsg1} as the macromolecule to have flexible residues
+      \item[] \texttt{Flexible Residues$\rightarrow$Input$\rightarrow$Choose Macromolecule}
+      \item Select the residues to be flexible
+      \item[] \texttt{Select$\rightarrow$Select From String}
+      \item[] Type \texttt{ARG8} in the Residue entry and click on Add
+      \item[] Check that \texttt{2 Residue(s)} appear in the Selected: entry below
+      \item Define the rotatable bonds in the selected residues.
+      \item[] \texttt{Flexible Residue$\rightarrow$Choose Torsions in Currently Selected Residues}
+      \begin{enumerate}
+        {\tiny
+        \item[$\vardiamond$] All non selected residues in the macromolecule are hidden.
+        \item[$\vardiamond$] Sidechains of selected residues are shown as colored green (rotatable bonds), red (unrotatble bonds) and magenta (non-rotatable bonds)
+        \item[$\vardiamond$] Clicking a rotatable bond makes it non-rotatable while clicking a non-rotatable bond makes it rotatable.
+        }
+      \end{enumerate}
+      \item[] Click on the rotatable bond \texttt{CA} and \texttt{CB} in each residue to inactivate it.
+      \item Save flexible residue as \texttt{hsg1\_flex.pdbqt} and rigid residue as \texttt{hsg1\_rigid.pdbqt}
+      \item[] \texttt{Flexible Residues$\rightarrow$Output$\rightarrow$Save Flexible PDBQT}
+      \item[] \texttt{Flexible Residues$\rightarrow$Output$\rightarrow$Save Rigid PDBQT}
+      \item Remove this version of \texttt{hsg1}
+      \item[] \texttt{Edit$\rightarrow$Delete$\rightarrow$Delete Molecule}
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\subsection{Preparing the Grid Parameter File}
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Preparing the Grid Parameter File}
+  \begin{block}{}
+    \begin{itemize}
+      \item The grid parameter file tells AutoGrid4 which receptor to compute the potentials around, the types of maps to compute and the location and extendt of those maps.
+      \item It may specify a custom library of pairwise potential energy parameters.
+      \item In general, one map is calculated for each atom type in the ligand plus an electrostatics map and a separate desolvation map.
+    \end{itemize}
+  \end{block}
+  
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item Open \texttt{hsg1\_rigid.pdbqt} to prepare grid parameter file
+      \item[] \texttt{Grid$\rightarrow$Macromolecule$\rightarrow$Open}
+      \item Choose ligand file, \texttt{ind}
+      \item[] \texttt{Grid$\rightarrow$Set Map Types$\rightarrow$Choose Ligand}
+      \item Create Grid
+      \item[] \texttt{Grid$\rightarrow$Grid Box}
+      \item[] Adjust number of points to \texttt{60 60 66}, each map will have 249,307 points
+      \item[]Type in \texttt{2.5 6.5} and \texttt{-7.5} in the x, y and z- center entries. This will center the grid on the active site of the HIV-1 protease, hsg1
+      \item Close this widget \texttt{File$\rightarrow$Close saving current}
+      \item Save Grid Parameter File as \texttt{hsg1.gpf}
+      \item[] \texttt{Grid$\rightarrow$Output$\rightarrow$Save GPF}
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\subsection{Preparing the Docking Parameter File}
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Preparing the Docking Parameter File}
+  \begin{block}{}
+    \begin{itemize}
+      \item The docking parameter file tells AutoDock
+      \begin{itemize}
+        {\tiny
+        \item which map files to use,
+        \item the ligand molecule to move, 
+        \item what is the center and number of torsions are, 
+        \item where to start the ligand, 
+        \item the flexible residues to move if sidechain motion in the receptor is to be modeled, 
+        \item which docking algorithm to use and how many runs to do
+        }
+      \end{itemize}
+      \item Four different docking algorithm are currently available in AutoDock
+      \begin{enumerate}
+        {\tiny
+        \item SA, the original Monte Carlo simulated annealing,
+        \item GA, a traditional Darwinian genetic algorithm,
+        \item LS, local search,
+        \item GALS, hybrid genetic algorithm with local search also known as Lamarckian genetic algorithm or LGA
+        }
+      \end{enumerate}
+      \item Each search method has its won set of parameter which must be set before running the docking experiment.
+      \item Parameters include what kind of random number generator to use, step sizes, etc. with the most important parameters affect how long each docking will run.
+      \item In SA, the number of temperature cycles, the number of accepted moves and number of rejected moves determine how long a docking will take.
+      \item In the GA and GALS, the number of evaluations and the number of generations affect how long a docking will run.
+    \end{itemize}
+  \end{block}
+
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item Choose Rigid Macromolecule, \texttt{hsg1\_rigid.pdbqt}
+      \item[] \texttt{Docking$\rightarrow$Macromolecule$\rightarrow$Set Rigid Filename}
+      \item Choose Ligand, \texttt{ind}
+      \item[] \texttt{Docking$\rightarrow$Ligand$\rightarrow$Choose}
+      \item Choose Flexible Residue, \texttt{hsg1\_flex.pdbqt}
+      \item[] \texttt{Docking$\rightarrow$Macromolecule$\rightarrow$Set Flexible Residues}
+      \item Set Search Parameters
+      \item[] \texttt{Docking$\rightarrow$Search Parameters$\rightarrow$Genetic Algorithm}, choose a short setting ie 250,000 energy eveluations
+      \item Choose docking parameters, for exercise accept default values
+      \item[] \texttt{Docking$\rightarrow$Docking Parameters}
+      \item Save output as \texttt{ind.dpf}
+      \item[] \texttt{Docking$\rightarrow$Output$\rightarrow$Lamarckian GA}
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\section{Running AutoGrid/AutoDock Calculations on LSU HPC and LONI}
+\subsection{AutoDock and AutoGrid}
+\begin{frame}
+  \frametitle{\small AutoDock/AutoGrid on LSU HPC and LONI}
+  \begin{block}{}
+    \begin{itemize}
+      \item AutoDock 4.2 is installed on all LONI x86 clusters and the LSU HPC Tezpur cluster.
+      \item Log into one of them on which you have an account.
+      \item From Mac and Linux terminal, ssh <clustername>.loni.org or ssh tezpur.hpc.lsu.edu
+      \item On Windows, use Putty to login to the clusters
+      \item Add soft key for autodock, +autodock-4.3-gcc-4.3.2 to your .soft file
+      \item resoft, to add autodock to your path
+      \item Copy the pdbqt, gpf and dpf files that you just created
+      \item AutoGrid and AutoDock must be run in the directory where the rigid macromolecule, ligand and parameter files are present.
+      \item On QueenBee, all my input files are saved in /home/apacheco/CompChem/AutoDock
+      \item Request an interactive queue
+      \item[] qsub -I -l walltime=1:00:00,nodes=1:ppn=4 -q checkpt
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\subsection{Running AutoGrid and AutoDock}
+\begin{frame}[fragile,allowframebreaks]
+  \frametitle{\small Running AutoGrid and AutoDock}
+  \begin{eblock}{Running jobs interactively}
+    {\tiny
+    \begin{verbatim}
+[apacheco@qb4 ~]$ qsub -I -l walltime=1:00:00,nodes=1:ppn=8 -q checkpt
+...
+--------------------------------------
+Running PBS prologue script
+--------------------------------------
+User and Job Data:
+--------------------------------------
+...
+[apacheco@qb667 ~]$ cd CompChem/AutoDock/
+[apacheco@qb667 AutoDock]$ autogrid4 -p hsg1.gpf -l hsg1.glg
+
+autogrid4: Successful Completion.
+[apacheco@qb667 AutoDock]$ autodock4 -p ind.dpf -l ind.dlg
+
+________________________________________________________________________________
+
+autodock4: Successful Completion on "qb667"
+
+________________________________________________________________________________
+
+    \end{verbatim}
+    }
+  \end{eblock}
+  \begin{block}{}
+    \begin{itemize}
+      \item In general, you should write a submit script to run autodock and autogrid jobs and submit it to the job manager.
+      \item The AutoGrid job should be completed before the AutoDock job starts.
+    \end{itemize}
+  \end{block}
+  \begin{columns}
+    \column{5.6cm}
+    \begin{eblock}{AutoGrid submit script}
+      {\tiny
+      \begin{verbatim}
+[apacheco@qb4 AutoDock]$ cat submit_grid.pbs
+#!/bin/bash
+#
+#PBS -q checkpt
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=20:00
+#PBS -o autogrid.err
+#PBS -e autogrid.err
+#PBS -j oe
+#PBS -N AutoGrid4
+
+export EXEC=autogrid4
+export INPUT=hsg1.gpf
+export OUTPUT=hsg1.glg
+export WORK_DIR=$PBS_O_WORKDIR
+
+cd $WORK_DIR
+
+$EXEC -p $INPUT -l $OUTPUT 
+[apacheco@qb4 AutoDock]$ qsub submit_grid.pbs
+      \end{verbatim}
+      }
+    \end{eblock}
+    \column{5.6cm}
+    \begin{eblock}{AutoDock submit script}
+      {\tiny
+      \begin{verbatim}
+[apacheco@qb4 AutoDock]$ cat submit_dock.pbs 
+#!/bin/bash
+#
+#PBS -q checkpt 
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=20:00
+#PBS -o autodock.err
+#PBS -e autodock.err
+#PBS -j oe
+#PBS -N AutoDock4
+
+export EXEC=autodock4
+export INPUT=ind.dpf
+export OUTPUT=ind.dlg
+export WORK_DIR=$PBS_O_WORKDIR
+
+cd $WORK_DIR
+
+$EXEC -p $INPUT -l $OUTPUT  
+[apacheco@qb4 AutoDock]$ qsub submit_dock.pbs
+      \end{verbatim}
+      }
+    \end{eblock}
+  \end{columns}
+
+  \begin{eblock}{}
+    The following script would allow you to submit both jobs at the same time.
+    {\tiny
+    \begin{verbatim}
+[apacheco@qb4 AutoDock]$ cat submit_both
+#!/bin/bash
+
+
+FIRST=`qsub submit_grid.pbs`
+echo $FIRST
+SECOND=`qsub -W depend=afterok:$FIRST submit_dock.pbs`
+echo $SECOND
+exit 0
+    \end{verbatim}
+    }
+    Note: For AutoDock job to run, the AutoGrid job should be completed without errors. It is your responsibility to check for this, do not email me if autodock4 doesn't run.\\
+    Usage: ./submit\_both
+  \end{eblock}
+\end{frame}
+
+\section{Analysis Using AutoDock Tools}
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Analysis: Reading Docking Logs}
+  \begin{itemize}
+    \item Key results in a docking logfile
+    \begin{enumerate}
+      \item docked structures found at the end of each run,
+      \item energies of these structures,
+      \item similarities between the docked structures measured by computing the root-mean-square (rms) deviation.
+    \end{enumerate}
+    \item Docking results consist of the PDBQ of the cartesian coordinates of the atoms in the docked molecule, along with state variables that describe this docked conformation and position.
+  \end{itemize}
+
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item Choose AutoDock log file to analyze, \texttt{ind.dlg}
+      \item[] \texttt{Analyze$\rightarrow$Dockings$\rightarrow$Open}
+      \item[] Reading a docking log creates a Docking instance
+      \item[] A Conformation instance is created for each docked result in the docking log.
+      \item[] A Conformation represents a specific state of the ligand and has either a particular set of state variables from which all the ligand atom coordinates can be computed or the coordinates themselves.
+      \item[] Conformations also have energies: docked energy, binding energy and possibly per atom electrostatic  and vdw energies.
+      \item Load Conformation Chooser
+      \item[] \texttt{Analyze$\rightarrow$Conformations$\rightarrow$Load}
+      \item[] This gives a concise view of energies and clusters of the docked results.
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Analysis: Visualizing Docked Conformations}
+  \begin{itemize}
+    \item The 'best' docking result can be considered to be the conformation with the lowest (docked) energy or one selected based on its rms deviation from areference structure.
+  \end{itemize}
+
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item Open a conformation player to examine docked confirmations
+      \item[] \texttt{Analyze$\rightarrow$Conformations$\rightarrow$Play}
+      \item[] Conformation 0 us the original, input conformation.
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{\small Analysis: Clustering Confirmations}
+  \begin{itemize}
+    \item An AutoDock experiment has several solutions.
+    \item The reliability of a docking result depends on the similarity of its final docked conformations.
+    \item One way to measure the reliability of the result is to compare the rmsd of the lowest energy conformations and their rmsd to one another to group them into families of similar conformations or 'clusters'
+  \end{itemize}
+
+  \begin{eblock}{}
+    \begin{enumerate}
+      \item \texttt{Analyze$\rightarrow$Clusterings$\rightarrow$Show}
+      \item[] This opens an histogran chart, bars represent the clusters computed at the specified rmsd. 
+      \item[] The histogram bars are sorted by energy of the lowest energy conformation in that cluster and start off colored blue.
+      \item \texttt{Analyze$\rightarrow$Clusterings$\rightarrow$Recluster}
+      \item[] Opens a widget which lets you enter a series of new rms tolerances as floating point numbers separted by spaces.
+    \end{enumerate}
+  \end{eblock}
+\end{frame}
+
+\end{document}
